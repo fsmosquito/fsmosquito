@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fsmosquito-desktop", "fsmosquito-desktop\fsmosquito-desktop.csproj", "{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", "{F39962FF-17DE-4BD2-BFAA-EADEF7337CC7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fsmosquito-simconnect", "fsmosquito-simconnect\fsmosquito-simconnect.csproj", "{9BF66734-928C-4156-A2DC-FC4930A83C38}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fsmosquito-common", "fsmosquito-common\fsmosquito-common.csproj", "{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{42C4E6D1-D5CE-4D6D-B2EA-FF7CC4CFE5A4}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fsmosquito-simconnect-shim", "fsmosquito-simconnect-shim\fsmosquito-simconnect-shim.csproj", "{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Debug|x64.ActiveCfg = Debug|x64
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Debug|x64.Build.0 = Debug|x64
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Release|Any CPU.ActiveCfg = Release|x64
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Release|x64.ActiveCfg = Release|x64
+		{0CFBEABB-C352-4DDB-B733-7FD6110DA0CE}.Release|x64.Build.0 = Release|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Debug|x64.ActiveCfg = Debug|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Debug|x64.Build.0 = Debug|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Release|Any CPU.ActiveCfg = Release|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Release|x64.ActiveCfg = Release|x64
+		{9BF66734-928C-4156-A2DC-FC4930A83C38}.Release|x64.Build.0 = Release|x64
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Debug|x64.ActiveCfg = Debug|x64
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Debug|x64.Build.0 = Debug|x64
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Release|x64.ActiveCfg = Release|x64
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C}.Release|x64.Build.0 = Release|x64
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Debug|x64.ActiveCfg = Debug|x64
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Debug|x64.Build.0 = Debug|x64
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Release|x64.ActiveCfg = Release|x64
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9BF66734-928C-4156-A2DC-FC4930A83C38} = {F39962FF-17DE-4BD2-BFAA-EADEF7337CC7}
+		{CFEB4D50-A2F8-4942-B5CE-CBD05453242C} = {F39962FF-17DE-4BD2-BFAA-EADEF7337CC7}
+		{DF6D7AA9-4490-465C-9DDE-5EB74AADAE4E} = {F39962FF-17DE-4BD2-BFAA-EADEF7337CC7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74045C47-9155-4BFB-95A7-0432250A6647}
+	EndGlobalSection
+EndGlobal

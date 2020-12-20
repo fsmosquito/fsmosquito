@@ -1,0 +1,47 @@
+{
+    "executable": "fsmosquito-desktop",
+    "splashscreen": {
+        "imageFile": "./Assets/fsmosquito.png"
+    },
+    "name": "fsmosquito-desktop",
+    "author": "BaristaLabs, LLC",
+    "singleInstance": true,
+    "aspCoreBackendPort": 5272,
+    "environment": "Production",
+    "build": {
+        "appId": "com.fsmosquito-desktop.app",
+        "productName": "fsmosquito-desktop",
+        "copyright": "Copyright © 2020",
+        "buildVersion": "1.0.0",
+        "compression": "maximum",
+        "directories": {
+            "output": "../../../bin/Desktop"
+        },
+        "win": {
+            "icon": "./bin/Assets/fsmosquito.png"
+        },
+        "nsis": {
+            "oneClick": true
+        },
+        "extraResources": [
+            {
+                "from": "./bin",
+                "to": "bin",
+                "filter": [ "**/*" ]
+            },
+            {
+                "from": "./fsmosquito-app",
+                "to": "fsmosquito-app",
+                "filter": [ "**/*" ]
+            }
+        ],
+        "files": [
+            {
+                "from": "./ElectronHostHook/node_modules",
+                "to": "ElectronHostHook/node_modules",
+                "filter": [ "**/*" ]
+            },
+            "**/*"
+        ]
+    }
+}
