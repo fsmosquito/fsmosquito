@@ -13,16 +13,16 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class FsSimConnectMqttClient : IFsSimConnectMqttClient
+    public class SimConnectMqttClient : ISimConnectMqttClient
     {
         private static readonly Random s_random = new Random();
 
         private readonly FsMosquitoOptions _options;
         private readonly MqttApplicationMessageRouter _router;
         private readonly IMqttClientOptions _mqttClientOptions;
-        private readonly ILogger<FsSimConnectMqttClient> _logger;
+        private readonly ILogger<SimConnectMqttClient> _logger;
 
-        public FsSimConnectMqttClient(IOptions<FsMosquitoOptions> options, MqttApplicationMessageRouter router, ILogger<FsSimConnectMqttClient> logger)
+        public SimConnectMqttClient(IOptions<FsMosquitoOptions> options, MqttApplicationMessageRouter router, ILogger<SimConnectMqttClient> logger)
         {
             _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
             _router = router ?? throw new ArgumentNullException(nameof(router));

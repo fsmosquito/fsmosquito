@@ -1,5 +1,6 @@
 ﻿namespace FsMosquito.SimConnect
 {
+    using FsMosquito.Extensions;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using MQTTnet;
@@ -7,7 +8,6 @@
     using System.Text.Json;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Adapts the functionality of SimConnect to MQTT Based Messaging.
@@ -25,42 +25,75 @@
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task SimConnectOpened()
+        public void OnCompleted()
         {
-            await _messagePublisher.PublishAsync(
+            _messagePublisher.PublishAsync(
                  new MqttApplicationMessageBuilder()
                     .WithTopic($"fsm/atc/{_options.HostName}/status")
-                    .WithPayload("Opened")
+                    .WithPayload("Completed")
                     .Build(),
                  CancellationToken.None
-            );
+            ).Forget();
 
             _logger.LogInformation($"Published SimConnect on {_options.HostName} Opened Status");
         }
 
-        public async Task SimConnectClosed()
+        public void OnError(Exception error)
         {
-            await _messagePublisher.PublishAsync(
+            _messagePublisher.PublishAsync(
                  new MqttApplicationMessageBuilder()
                     .WithTopic($"fsm/atc/{_options.HostName}/status")
-                    .WithPayload("Closed")
+                    .WithPayload("Error")
                     .Build(),
                  CancellationToken.None
-            );
-
-            _logger.LogInformation($"Published SimConnect on {_options.HostName} Closed Status");
+            ).Forget();
         }
 
-        public async Task TopicValueChanged((SimConnectTopic topic, uint objectId, object value) topicValue)
+        public void OnNext(SimConnectEvent simEvent)
         {
-            var snakeCasedTopicName = Regex.Replace(topicValue.topic.DatumName.ToLower(), "\\s", "_");
-            await _messagePublisher.PublishAsync(
-                 new MqttApplicationMessageBuilder()
-                    .WithTopic($"fsm/atc/{_options.HostName}/obj/{topicValue.objectId}/{snakeCasedTopicName}")
-                    .WithPayload(JsonSerializer.Serialize(new SimConnectValue() { Units = topicValue.topic.Units, Value = topicValue.value } ))
-                    .Build(),
-                 CancellationToken.None
-            );
+            switch (simEvent)
+            {
+                case SimConnectOpenedEvent:
+                    _messagePublisher.PublishAsync(
+                         new MqttApplicationMessageBuilder()
+                            .WithTopic($"fsm/atc/{_options.HostName}/status")
+                            .WithPayload("Opened")
+                            .Build(),
+                         CancellationToken.None
+                    ).Forget();
+
+                    _logger.LogInformation($"Published SimConnect on {_options.HostName} Opened Status");
+                    break;
+                case SimConnectQuitEvent:
+                    _messagePublisher.PublishAsync(
+                         new MqttApplicationMessageBuilder()
+                            .WithTopic($"fsm/atc/{_options.HostName}/status")
+                            .WithPayload("Closed")
+                            .Build(),
+                         CancellationToken.None
+                    ).Forget();
+
+                    _logger.LogInformation($"Published SimConnect on {_options.HostName} Closed Status");
+                    break;
+                case SimObjectDataChangedEvent changed:
+                    var dataChangedTopicFragmentName = Regex.Replace(changed.Topic.DatumName.ToLower(), "\\s", "_");
+                    if (!string.IsNullOrWhiteSpace(changed.Topic.TopicLevelName))
+                    {
+                        dataChangedTopicFragmentName = changed.Topic.TopicLevelName.Trim();
+                    }
+
+                    _messagePublisher.PublishAsync(
+                         new MqttApplicationMessageBuilder()
+                            .WithTopic($"fsm/atc/{_options.HostName}/obj/{changed.ObjectId}/{dataChangedTopicFragmentName}")
+                            .WithPayload(JsonSerializer.Serialize(new SimObjectMeasurement() { Units = changed.Topic.Units, Value = changed.Value }))
+                            .Build(),
+                         CancellationToken.None
+                    ).Forget();
+                    break;
+                default:
+                    // Ignore SimObjectDataRecieved, SimObjectDataRequested for now.
+                    break;
+            }
         }
     }
 }

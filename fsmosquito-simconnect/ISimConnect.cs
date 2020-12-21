@@ -3,35 +3,10 @@
     using System;
 
     /// <summary>
-    /// Represents an interface to a SimConnect wrapper.
+    /// Represents an interface of a SimConnect wrapper implementation.
     /// </summary>
-    public interface IFsSimConnect : IObserver<SimConnectMessage>, IDisposable
+    public interface ISimConnect : IObserver<SimConnectWindowsMessageEvent>, IObservable<SimConnectEvent>, IDisposable
     {
-        /// <summary>
-        /// Event that is raised when a SimConnect connection is successfully established.
-        /// </summary>
-        public event EventHandler SimConnectOpened;
-
-        /// <summary>
-        /// Event that is raised when a SimConnect connection is closed. Usually if the game exits.
-        /// </summary>
-        public event EventHandler SimConnectClosed;
-
-        /// <summary>
-        /// Event that is raised when a previously subscribed topic value has changed.
-        /// </summary>
-        public event EventHandler<(SimConnectTopic, uint, object)> TopicValueChanged;
-
-        /// <summary>
-        /// Event that is raised when a SimConnect data object is received.
-        /// </summary>
-        public event EventHandler SimConnectDataReceived;
-
-        /// <summary>
-        /// Event that is raised when a SimConnect data object is requested.
-        /// </summary>
-        public event EventHandler SimConnectDataRequested;
-
         /// <summary>
         /// Gets or sets the message id that will be used for simconnect messages.
         /// </summary>

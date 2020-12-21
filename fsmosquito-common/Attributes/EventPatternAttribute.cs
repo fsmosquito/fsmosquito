@@ -3,10 +3,10 @@
     using System;
 
     /// <summary>
-    /// Subscribes to incoming events with the specified pattern
+    /// When decorated on MQTT Controller Methods, indicates to subscribe the method to incoming MQTT messages with the specified pattern.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class EventPatternAttribute : Attribute
+    public sealed class EventPatternAttribute : Attribute
     {
         /// <summary>
         /// Creates a new <see cref="EventPatternAttribute"/> with the given pattern.
@@ -19,6 +19,7 @@
 
         /// <summary>
         /// Gets the event topic pattern.
+        /// Supports {MachineName} and {HostName} tokens - more tokens may be added over time.
         /// </summary>
         public string Pattern { get; }
 

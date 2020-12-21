@@ -1,11 +1,17 @@
 ﻿namespace FsMosquito.SimConnect
 {
-    public enum Definition
+    /// <summary>
+    /// Used internally by FsSimConnect to convert non-enum values into Enums needed by SimConnect
+    /// </summary>
+    internal enum Definition
     {
         Dummy = 0
     }
 
-    public enum Request
+    /// <summary>
+    /// Used internally by FsSimConnect to convert non-enum values into Enums needed by SimConnect
+    /// </summary>
+    internal enum Request
     {
         Dummy = 0
     }

@@ -2,7 +2,7 @@
 {
     using System.Text.Json.Serialization;
 
-    public record SimConnectValue
+    public record SimObjectMeasurement
     {
         [JsonPropertyName("units")]
         public string Units

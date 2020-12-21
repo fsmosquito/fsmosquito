@@ -3,17 +3,14 @@
     using System;
 
     /// <summary>
-    /// Indicates that a type and all derived types are used to serve MQTT responses.
+    /// Indicates that a type is used to serve MQTT responses.
     /// <para>
     /// Controllers decorated with this attribute are configured with features and behavior targeted at improving the
-    /// developer experience for building APIs.
-    /// </para>
-    /// <para>
-    /// When decorated on an assembly, all controllers in the assembly will be treated as controllers with API behavior.
+    /// developer experience for building MQTT APIs.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class MqttControllerAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public sealed class MqttControllerAttribute : Attribute
     {
     }
 }

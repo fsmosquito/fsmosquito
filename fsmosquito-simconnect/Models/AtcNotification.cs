@@ -4,7 +4,7 @@
     using System.Text.Json;
     using System.Text.Json.Serialization;
 
-    public class AtcNotification
+    public record AtcNotification
     {
         [JsonPropertyName("message")]
         public string Message

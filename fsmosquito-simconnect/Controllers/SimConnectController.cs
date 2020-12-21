@@ -18,9 +18,9 @@
         private readonly FsMosquitoOptions _options;
         private readonly ILogger<SimConnectController> _logger;
         private readonly IApplicationMessagePublisher _messagePublisher;
-        private readonly IFsSimConnect _simConnect;
+        private readonly ISimConnect _simConnect;
 
-        public SimConnectController(IOptions<FsMosquitoOptions> options, IApplicationMessagePublisher messagePublisher, IFsSimConnect simConnect, ILogger<SimConnectController> logger)
+        public SimConnectController(IOptions<FsMosquitoOptions> options, IApplicationMessagePublisher messagePublisher, ISimConnect simConnect, ILogger<SimConnectController> logger)
         {
             _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
             _messagePublisher = messagePublisher ?? throw new ArgumentNullException(nameof(messagePublisher));

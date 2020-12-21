@@ -3,7 +3,10 @@
     using System;
     using System.Text.Json.Serialization;
 
-    public class HostInfo
+    /// <summary>
+    /// Represents information about a host.
+    /// </summary>
+    public record HostInfo
     {
         [JsonPropertyName("name")]
         public string Name
@@ -19,6 +22,10 @@
             set;
         }
 
+        /// <summary>
+        /// Factory method to retrieve the host info of the current host.
+        /// </summary>
+        /// <returns></returns>
         public static HostInfo GetHostInfo()
         {
             var result = new HostInfo()

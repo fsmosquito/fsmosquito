@@ -7,36 +7,37 @@
     using System.Collections.Concurrent;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
     using System.Timers;
 
     /// <summary>
-    /// Represents a wrapper around SimConnect
+    /// Represents a wrapper around Microsoft Flight Simulator's SimConnect Implementation
     /// </summary>
-    public sealed class FsSimConnect : IFsSimConnect
+    public sealed class FsSimConnect : ISimConnect
     {
         private const int PulseInterval = 500;
         private const int RequestWaitInterval = 1000 * 5;
 
-        private static int s_subscriptionCount = 0;
-        private static int s_currentRequestId = 0;
+        private static long s_subscriptionCount = 0;
+        private static long s_currentRequestId = 0;
 
         private readonly ILogger<FsSimConnect> _logger;
         private readonly FsMosquitoOptions _options;
         private readonly Timer _pulseTimer = new Timer(PulseInterval);
         private readonly Timer _reconnectTimer = new Timer(15 * 1000);
+        private readonly ConcurrentDictionary<IObserver<SimConnectEvent>, SimConnectEventUnsubscriber> _observers = new ConcurrentDictionary<IObserver<SimConnectEvent>, SimConnectEventUnsubscriber>();
         private readonly ConcurrentDictionary<string, SimConnectSubscription> _subscriptions = new ConcurrentDictionary<string, SimConnectSubscription>();
-        private readonly ConcurrentDictionary<int, SimConnectSubscription> _pendingSubscriptions = new ConcurrentDictionary<int, SimConnectSubscription>();
+        private readonly ConcurrentDictionary<long, SimConnectSubscription> _pendingSubscriptions = new ConcurrentDictionary<long, SimConnectSubscription>();
         
         private IntPtr _lastHandle;
         private uint _messageId;
         private SimConnect _simConnect;
 
-        public event EventHandler SimConnectOpened;
-        public event EventHandler SimConnectClosed;
-        public event EventHandler<(SimConnectTopic, uint, object)> TopicValueChanged;
-        public event EventHandler SimConnectDataReceived;
-        public event EventHandler SimConnectDataRequested;
-
+        /// <summary>
+        /// Creates a new instance of FsSimConnect with the specified options and logger.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="logger"></param>
         public FsSimConnect(IOptions<FsMosquitoOptions> options, ILogger<FsSimConnect> logger)
         {
             _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
@@ -181,7 +182,19 @@
                 throw new InvalidOperationException("FsMqtt is not connected.");
             }
 
-            OnSimConnect_Closed();
+            OnSimConnect_Quit();
+
+            Parallel.ForEach(_observers.Keys, (observer) =>
+            {
+                try
+                {
+                    observer.OnCompleted();
+                }
+                catch (Exception)
+                {
+                    // Do Nothing.
+                }
+            });
         }
 
         ///<inheritdoc />
@@ -218,18 +231,10 @@
                 return;
             }
 
-            var newSubscription = topic.Units switch
+            var newSubscription = new SimConnectSubscription()
             {
-                Consts.SimConnectStringV => new SimConnectSubscription()
-                {
-                    Id = System.Threading.Interlocked.Increment(ref s_subscriptionCount),
-                    Topic = topic,
-                },
-                _ => new SimConnectSubscription()
-                {
-                    Id = System.Threading.Interlocked.Increment(ref s_subscriptionCount),
-                    Topic = topic,
-                },
+                Id = System.Threading.Interlocked.Increment(ref s_subscriptionCount),
+                Topic = topic,
             };
 
             if (_subscriptions.TryAdd(topic.DatumName, newSubscription) == false)
@@ -265,7 +270,38 @@
                         _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.INT32, 0, SimConnect.SIMCONNECT_UNUSED);
                         _simConnect.RegisterDataDefineStruct<bool>(def);
                         break;
-                    case Consts.SimConnectStringV:
+                    case Consts.SimConnectString8:
+                    case Consts.SIMCONNECT_DATATYPE_STRING8:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING8, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String8Struct>(def);
+                        break;
+                    case Consts.SimConnectString32:
+                    case Consts.SIMCONNECT_DATATYPE_STRING32:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING32, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String32Struct>(def);
+                        break;
+                    case Consts.SimConnectString64:
+                    case Consts.SIMCONNECT_DATATYPE_STRING64:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING64, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String64Struct>(def);
+                        break;
+                    case Consts.SimConnectString128:
+                    case Consts.SIMCONNECT_DATATYPE_STRING128:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING128, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String128Struct>(def);
+                        break;
+                    case Consts.SimConnectString256:
+                    case Consts.SIMCONNECT_DATATYPE_STRING256:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING256, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String256Struct>(def);
+                        break;
+                    case Consts.SimConnectString260:
+                    case Consts.SIMCONNECT_DATATYPE_STRING260:
+                        _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRING260, 0, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String260Struct>(def);
+                        break;
+                    case Consts.SimConnectString:
+                    case Consts.SIMCONNECT_DATATYPE_STRINGV:
                         _simConnect.AddToDataDefinition(def, topic.DatumName, null, SIMCONNECT_DATATYPE.STRINGV, 0, SimConnect.SIMCONNECT_UNUSED);
                         _simConnect.RegisterDataDefineStruct<StringStruct>(def);
                         break;
@@ -288,23 +324,23 @@
         }
 
         #region IObserver<SimConnectMessage>
-        void IObserver<SimConnectMessage>.OnCompleted()
+        void IObserver<SimConnectWindowsMessageEvent>.OnCompleted()
         {
             _logger.LogInformation($"Completed Observing SimConnect Messages.");
 
-            OnSimConnect_Closed();
+            OnSimConnect_Quit();
         }
 
-        void IObserver<SimConnectMessage>.OnError(Exception error)
+        void IObserver<SimConnectWindowsMessageEvent>.OnError(Exception error)
         {
             _logger.LogError($"An error occurred while observing SimConnectMessages: {error.Message}", error);
 
-            OnSimConnect_Closed();
+            OnSimConnect_Quit();
 
             _reconnectTimer.Start();
         }
 
-        void IObserver<SimConnectMessage>.OnNext(SimConnectMessage value)
+        void IObserver<SimConnectWindowsMessageEvent>.OnNext(SimConnectWindowsMessageEvent value)
         {
             if (IsDisposed || !IsConnected || _simConnect == null)
             {
@@ -322,10 +358,17 @@
             {
                 _logger.LogError($"An error occurred while signaling to recieve a message: {ex.Message}", ex);
 
-                OnSimConnect_Closed();
+                OnSimConnect_Quit();
 
                 _reconnectTimer.Start();
             }
+        }
+        #endregion
+
+        #region IObservable<SimConnectEvent>
+        IDisposable IObservable<SimConnectEvent>.Subscribe(IObserver<SimConnectEvent> observer)
+        {
+            return _observers.GetOrAdd(observer, new SimConnectEventUnsubscriber(this, observer));
         }
         #endregion
 
@@ -341,7 +384,9 @@
             _logger.LogInformation("SimConnect_OnRecvOpen");
             
             _pulseTimer.Start();
-            OnSimConnect_Opened();
+
+            // Produce the corresponding event
+            OnSimConnectEvent(new SimConnectOpenedEvent());
         }
 
         /// <summary>
@@ -353,7 +398,7 @@
         {
             IsOpen = false;
             _logger.LogInformation("SimConnect_OnRecvQuit");
-            OnSimConnect_Closed();
+            OnSimConnect_Quit();
             
             _reconnectTimer.Start();            
         }
@@ -367,8 +412,28 @@
         {
             var eException = (SIMCONNECT_EXCEPTION)data.dwException;
 
-            _logger.LogInformation("SimConnect_OnRecvException: " + eException.ToString());
-            OnSimConnect_Closed();
+            _logger.LogWarning("SimConnect_OnRecvException: " + eException.ToString());
+
+            var exception = new SimConnectException(eException.ToString())
+            {
+                ExceptionId = data.dwException,
+                SendId = data.dwSendID,
+                Index = data.dwIndex,
+            };
+
+            Parallel.ForEach(_observers.Keys, (observer) =>
+            {
+                try
+                {
+                    observer.OnError(exception);
+                }
+                catch (Exception)
+                {
+                    // Do Nothing.
+                }
+            });
+
+            OnSimConnect_Quit();
 
             _reconnectTimer.Start();
         }
@@ -383,24 +448,28 @@
             uint requestId = data.dwRequestID;
             uint objectId = data.dwObjectID;
 
-            // ObjectID == 0 is the user object data. See SimConnect.SIMCONNECT_OBJECT_ID_USER;
-            // But it seems to return it as 1... ???
-            object currentValue;
+            object currentValue = null;
             if (_pendingSubscriptions.TryRemove((int)requestId, out SimConnectSubscription subscription))
             {
-                switch (subscription.Topic.Units)
+                currentValue = subscription.Topic.Units switch
                 {
-                    case Consts.SimConnectBool:
-                        currentValue = (bool)data.dwData[0];
-                        break;
-                    case Consts.SimConnectStringV:
-                        currentValue = ((StringStruct)data.dwData[0]).value;
-                        break;
-                    default:
-                        currentValue = (double)data.dwData[0];
-                        break;
-                }
-
+                    Consts.SimConnectBool => (bool)data.dwData[0],
+                    Consts.SimConnectString8 or
+                    Consts.SIMCONNECT_DATATYPE_STRING8 => ((String8Struct)data.dwData[0]).value,
+                    Consts.SimConnectString32 or
+                    Consts.SIMCONNECT_DATATYPE_STRING32 => ((String32Struct)data.dwData[0]).value,
+                    Consts.SimConnectString64 or
+                    Consts.SIMCONNECT_DATATYPE_STRING64 => ((String64Struct)data.dwData[0]).value,
+                    Consts.SimConnectString128 or
+                    Consts.SIMCONNECT_DATATYPE_STRING128 => ((String128Struct)data.dwData[0]).value,
+                    Consts.SimConnectString256 or
+                    Consts.SIMCONNECT_DATATYPE_STRING256 => ((String256Struct)data.dwData[0]).value,
+                    Consts.SimConnectString260 or
+                    Consts.SIMCONNECT_DATATYPE_STRING260 => ((String260Struct)data.dwData[0]).value,
+                    Consts.SimConnectString or
+                    Consts.SIMCONNECT_DATATYPE_STRINGV => ((StringStruct)data.dwData[0]).value,
+                    _ => (double)data.dwData[0],
+                };
                 subscription.PendingRequestId = null;
                 subscription.PendingRequestStartTimeStamp = null;
 
@@ -409,23 +478,28 @@
                     if (subscription.LastValue != currentValue)
                     {
                         subscription.LastValue = currentValue;
-                        OnTopicValue_Changed(subscription.Topic, objectId, currentValue);
+
+                        // Produce the corresponding event
+                        OnSimConnectEvent(new SimObjectDataChangedEvent()
+                        {
+                            ObjectId = objectId,
+                            Topic = subscription.Topic,
+                            Value = currentValue,
+                        });
                     }
                 }
             }
 
-            OnSimConnectDataRecieved();
-        }
-
-        private void OnSimConnect_Opened()
-        {
-            if (SimConnectOpened != null)
+            // Produce the corresponding event
+            OnSimConnectEvent(new SimObjectDataReceivedEvent()
             {
-                SimConnectOpened.Invoke(this, EventArgs.Empty);
-            }
+                RequestId = requestId,
+                ObjectId = objectId,
+                Value = currentValue,
+            });
         }
 
-        private void OnSimConnect_Closed()
+        private void OnSimConnect_Quit()
         {
             _pulseTimer.Stop();
 
@@ -444,19 +518,8 @@
                 subscription.LastValue = null;
             }
 
-            // Raise the SimClosed event
-            if (SimConnectClosed != null)
-            {
-                SimConnectClosed.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnTopicValue_Changed(SimConnectTopic topic, uint objectId, object value)
-        {
-            if (TopicValueChanged != null)
-            {
-                TopicValueChanged.Invoke(this, (topic, objectId, value));
-            }
+            // Produce the corresponding event
+            OnSimConnectEvent(new SimConnectQuitEvent());
         }
 
         private void OnPulse_Elapsed(object sender, ElapsedEventArgs e)
@@ -490,24 +553,34 @@
                 var def = (Definition)Enum.ToObject(typeof(Definition), subscription.Id);
                 _simConnect.RequestDataOnSimObjectType(req, def, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
 
-                OnSimConnectDataRequested();
+                // Produce the corresponding event
+                OnSimConnectEvent(new SimObjectDataRequestedEvent()
+                {
+                    RequestId = nextRequestId,
+                    DefinitionId = subscription.Id,
+                    Radius = 0,
+                    SimObjectType = (int)SIMCONNECT_SIMOBJECT_TYPE.USER,
+                });
             }
         }
 
-        private void OnSimConnectDataRecieved()
+        /// <summary>
+        /// Produces SimConnect Events
+        /// </summary>
+        /// <param name="simConnectEvent"></param>
+        private void OnSimConnectEvent(SimConnectEvent simConnectEvent)
         {
-            if (SimConnectDataReceived != null)
+            Parallel.ForEach(_observers.Keys, (observer) =>
             {
-                SimConnectDataReceived.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnSimConnectDataRequested()
-        {
-            if (SimConnectDataRequested != null)
-            {
-                SimConnectDataRequested.Invoke(this, EventArgs.Empty);
-            }
+                try
+                {
+                    observer.OnNext(simConnectEvent);
+                }
+                catch (Exception)
+                {
+                    // Do Nothing.
+                }
+            });
         }
         #endregion
 
@@ -549,17 +622,81 @@
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1024)]
             public string value;
         };
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String8Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
+            public string value;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String32Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string value;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String64Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+            public string value;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String128Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string value;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String256Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+            public string value;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct String260Struct
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string value;
+        }
+        #endregion
+
+        #region Nested Classes
+        private sealed class SimConnectEventUnsubscriber : IDisposable
+        {
+            private readonly FsSimConnect _parent;
+            private readonly IObserver<SimConnectEvent> _observer;
+
+            public SimConnectEventUnsubscriber(FsSimConnect parent, IObserver<SimConnectEvent> observer)
+            {
+                _parent = parent ?? throw new ArgumentNullException(nameof(parent));
+                _observer = observer ?? throw new ArgumentNullException(nameof(observer));
+            }
+
+            public void Dispose()
+            {
+                if (_observer != null && _parent._observers.ContainsKey(_observer))
+                {
+                    _parent._observers.TryRemove(_observer, out _);
+                }
+            }
+        }
         #endregion
 
         #region Static Methods
         /// <summary>
-        /// Gets the next request id (threadsafe, non-overflowing... although if we get to int.maxvalue, that's a lot of seconds)
+        /// Gets the next request id (threadsafe, non-overflowing... although if we get to long.maxvalue, that's a lot of seconds)
         /// </summary>
         /// <returns></returns>
-        private static int GetNextRequestId()
+        private static long GetNextRequestId()
         {
             System.Threading.Interlocked.Increment(ref s_currentRequestId);
-            return System.Threading.Interlocked.CompareExchange(ref s_currentRequestId, 0, int.MaxValue - 1);
+            return System.Threading.Interlocked.CompareExchange(ref s_currentRequestId, 0, long.MaxValue - 1);
         }
         #endregion
     }

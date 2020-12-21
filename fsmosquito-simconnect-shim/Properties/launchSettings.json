@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "fsmosquito-simconnect-shim": {
+      "commandName": "Project"
+    }
+  }
+}

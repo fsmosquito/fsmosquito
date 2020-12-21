@@ -3,7 +3,7 @@
     using MQTTnet.Client;
     using System.Threading.Tasks;
 
-    public interface IFsSimConnectMqttClient
+    public interface ISimConnectMqttClient
     {
         /// <summary>
         /// Gets a value that indicates if the current instance is connected to MQTT

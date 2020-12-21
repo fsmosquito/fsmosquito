@@ -8,23 +8,22 @@
     using System.Windows.Forms;
 
     /// <summary>
-    /// Represents the main FSMosquito form. Provides a minimalistic UI. Signals the Adapter when WinProc is called with a message of our indicated type.
+    /// Represents the main FSMosquito form. Provides -no- UI, not intended to be shown.
+    /// Provides an implementation of ISimConnectEventSource that signals the Adapter when WinProc is called with a message of our configured id.
     /// </summary>
     [DesignerCategory("")]
     public sealed class FsMosquitoForm : Form, ISimConnectEventSource
     {
-        private readonly IFsSimConnect _simConnect;
-        private readonly ConcurrentDictionary<IObserver<SimConnectMessage>, Unsubscriber> _observers;
+        private readonly ISimConnect _simConnect;
+        private readonly ConcurrentDictionary<IObserver<SimConnectWindowsMessageEvent>, Unsubscriber> _observers = new ConcurrentDictionary<IObserver<SimConnectWindowsMessageEvent>, Unsubscriber>();
 
         private IContainer components = null;
 
-        public FsMosquitoForm(IFsSimConnect simConnect)
+        public FsMosquitoForm(ISimConnect simConnect)
         {
             _simConnect = simConnect ?? throw new ArgumentNullException(nameof(simConnect));
 
             InitializeComponent();
-
-            _observers = new ConcurrentDictionary<IObserver<SimConnectMessage>, Unsubscriber>();
         }
 
         IntPtr ISimConnectEventSource.Handle
@@ -36,7 +35,7 @@
             }
         }
 
-        IDisposable IObservable<SimConnectMessage>.Subscribe(IObserver<SimConnectMessage> observer)
+        IDisposable IObservable<SimConnectWindowsMessageEvent>.Subscribe(IObserver<SimConnectWindowsMessageEvent> observer)
         {
             return _observers.GetOrAdd(observer, new Unsubscriber(this, observer));
         }
@@ -45,7 +44,7 @@
         {
             if (m.Msg == _simConnect.MessageId)
             {
-                var message = new SimConnectMessage()
+                var message = new SimConnectWindowsMessageEvent()
                 {
                     HWnd = m.HWnd,
                     LParam = m.LParam,
@@ -76,7 +75,7 @@
             base.OnClosed(e);
         }
 
-        private void OnSimConnectMessage(SimConnectMessage msg)
+        private void OnSimConnectMessage(SimConnectWindowsMessageEvent msg)
         {
             Parallel.ForEach(_observers.Keys, (observer) =>
             {
@@ -94,9 +93,9 @@
         private sealed class Unsubscriber : IDisposable
         {
             private readonly FsMosquitoForm _parent;
-            private readonly IObserver<SimConnectMessage> _observer;
+            private readonly IObserver<SimConnectWindowsMessageEvent> _observer;
 
-            public Unsubscriber(FsMosquitoForm parent, IObserver<SimConnectMessage> observer)
+            public Unsubscriber(FsMosquitoForm parent, IObserver<SimConnectWindowsMessageEvent> observer)
             {
                 _parent = parent ?? throw new ArgumentNullException(nameof(parent));
                 _observer = observer ?? throw new ArgumentNullException(nameof(observer));
@@ -125,8 +124,7 @@
         }
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Initialize the form - make it as minimalistic as possible.
         /// </summary>
         private void InitializeComponent()
         {

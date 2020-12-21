@@ -7,21 +7,21 @@
 
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddSimConnectShim(this IServiceCollection services, HostBuilderContext hostContext)
+        public static IServiceCollection AddSimConnectShim<T>(this IServiceCollection services, HostBuilderContext hostContext)
+            where T : class, ISimConnectEventSource
         {
             services.Configure<FsMosquitoOptions>(hostContext.Configuration.GetSection("FSMosquito"));
 
             services.AddMqttControllers();
-            services.AddSingleton<IFsSimConnect, FsSimConnect>();
+            services.AddSingleton<ISimConnect, FsSimConnect>();
             services.AddSingleton<ISimConnectAdapter, SimConnectMqttAdapter>();
-            services.AddSingleton<IFsSimConnectMqttClient, FsSimConnectMqttClient>();
+            services.AddSingleton<ISimConnectMqttClient, SimConnectMqttClient>();
             services.AddSingleton<IApplicationMessagePublisher>((sp) =>
                {
-                   var simConnectMqttClient = sp.GetRequiredService<IFsSimConnectMqttClient>();
-                   return simConnectMqttClient.MqttClient;
+                   var simConnectMqttClient = sp.GetRequiredService<ISimConnectMqttClient>();
+                   return new OnlyWhenConnectedApplicationMessagePublisher(simConnectMqttClient.MqttClient);
                });
-            services.AddSingleton<ISimConnectEventSource, FsMosquitoForm>();
-            services.AddSingleton<FsMosquitoContext>();
+            services.AddSingleton<ISimConnectEventSource, T>();
 
             return services;
         }

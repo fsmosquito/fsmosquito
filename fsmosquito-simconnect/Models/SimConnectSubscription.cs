@@ -3,14 +3,14 @@
     using System;
 
     /// <summary>
-    /// Represents a subscription to a SimConnect topic.
+    /// Represents a subscription to a SimConnect topic. Used internally by FsSimConnect to manage subscriptions to topics and monitor changes.
     /// </summary>
-    public class SimConnectSubscription
+    internal sealed class SimConnectSubscription
     {
         /// <summary>
         /// Gets or sets the id of the subscription
         /// </summary>
-        public int Id
+        public long Id
         {
             get;
             set;
@@ -37,7 +37,7 @@
         /// <summary>
         /// Gets or sets the id of a pending request.
         /// </summary>
-        public int? PendingRequestId
+        public long? PendingRequestId
         {
             get;
             set;

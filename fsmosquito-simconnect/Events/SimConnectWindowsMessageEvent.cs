@@ -3,9 +3,9 @@
     using System;
 
     /// <summary>
-    /// Represents a SimConnect Message
+    /// Represents a SimConnect Windows Message produced by SimConnect by a ISimConnectEventSource
     /// </summary>
-    public record SimConnectMessage
+    public record SimConnectWindowsMessageEvent : SimConnectEvent
     {
         public IntPtr HWnd { get; set; }
         public IntPtr LParam { get; set; }

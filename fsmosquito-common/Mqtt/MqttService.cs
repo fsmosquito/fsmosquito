@@ -5,6 +5,9 @@
     using MQTTnet.Server;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Represents a MQTTNet MQTT service
+    /// </summary>
     public class MqttService :
         IMqttServerClientConnectedHandler,
         IMqttServerClientDisconnectedHandler,

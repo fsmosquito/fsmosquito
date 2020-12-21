@@ -8,55 +8,55 @@ namespace FsMosquito
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
     public class Program
     {
+        private static readonly Command _simConnectShimCommand = Cli.Wrap("fsmosquito-desktop")
+                    .WithWorkingDirectory(Directory.GetCurrentDirectory())
+                    .WithArguments(new string[] { "StartSimConnectShim", "-s", $"-p {Environment.ProcessId}" });
+        
         private static ILogger<Program> _logger;
-        private static Command _shimCommand;
-        private static IDisposable _shimSubscription;
-        private static int _currentProcessId;
+        private static IDisposable _simConnectSubscription;
 
         public static void Main(string[] args)
         {
-            // If we're shimming SimConnect, invoke the entrypoint of the SimConnect Shim. Otherwise, perform a regular startup.
-            if (args != null && args.Length > 0 && args[0] == "StartShim")
+            switch(args.FirstOrDefault())
             {
-                SimConnect.Program.Main(args.Skip(1).ToArray());
-            }
-            else
-            {
-                var currentProcess = Process.GetCurrentProcess();
-                currentProcess.EnableRaisingEvents = true;
-                _currentProcessId = currentProcess.Id;
+                // If we're shimming SimConnect, invoke the entrypoint of the SimConnect Shim windows host 
+                case "StartSimConnectShim":
+                    SimConnect.Program.Main(args.Skip(1).ToArray());
+                    break;
+                // In other cases, perform a regular startup of the web host
+                default:
+                    var host = CreateHostBuilder(args).Build();
+                    _logger = host.Services.GetRequiredService<ILogger<Program>>();
 
-                var host = CreateHostBuilder(args).Build();
-                _logger = host.Services.GetRequiredService<ILogger<Program>>();
+                    // Kick off a child process of ourself, but instead in shim mode.
+                    StartSimConnectShim();
 
-                _shimCommand = Cli.Wrap("fsmosquito-desktop")
-                    .WithWorkingDirectory(Directory.GetCurrentDirectory())
-                    .WithArguments(new string[] { "StartShim", $"{_currentProcessId}" });
-
-                // Kick off a child process of ourself, but instead in shim mode.
-                StartShim();
-                host.Run();
+                    // Start the Web Host
+                    host.Run();
+                    break;
             }
         }
 
-        public static void StartShim()
+        /// <summary>
+        /// Starts the SimConnectShim
+        /// </summary>
+        public static void StartSimConnectShim()
         {
             // If we already have a subscription, dispose of it.
-            if (_shimSubscription != null)
+            if (_simConnectSubscription != null)
             {
-                _shimSubscription.Dispose();
-                _shimSubscription = null;
+                _simConnectSubscription.Dispose();
+                _simConnectSubscription = null;
             }
 
-            // Observe the shim process.
-            _shimSubscription = _shimCommand.Observe().Subscribe(new ShimObserver());
+            // Observe the simconnect shim process.
+            _simConnectSubscription = _simConnectShimCommand.Observe().Subscribe(new SimConnectShimObserver());
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -68,7 +68,10 @@ namespace FsMosquito
                     webBuilder.UseUrls("http://0.0.0.0:5272");
                 });
 
-        private class ShimObserver : IObserver<CommandEvent>
+        /// <summary>
+        /// Represents an object that observes the simconnect shim.
+        /// </summary>
+        private sealed class SimConnectShimObserver : IObserver<CommandEvent>
         {
             public void OnCompleted()
             {
@@ -84,6 +87,9 @@ namespace FsMosquito
                 {
                     _logger.LogError($"An exception occurred observing the FsMosquito SimConnect Shim: {error.Message}", error);
                 }
+
+                // Restart the shim if we didn't get a clean exit.
+                Task.Run(() => StartSimConnectShim());
             }
 
             public void OnNext(CommandEvent cmdEvent)
@@ -101,26 +107,29 @@ namespace FsMosquito
                         {
                             _logger.LogInformation($"FsMosquito SimConnect Shim StdOut: {stdOut.Text}");
                         }
-                        Console.WriteLine(stdOut.Text);
                         break;
                     case StandardErrorCommandEvent stdErr:
                         if (_logger != null)
                         {
                             _logger.LogWarning($"FsMosquito SimConnect Shim StdErr: {stdErr.Text}");
                         }
-                        Console.WriteLine(stdErr.Text);
                         break;
                     case ExitedCommandEvent exited:
                         if (_logger != null)
                         {
                             _logger.LogWarning($"FsMosquito SimConnect Shim Exited: {exited.ExitCode}");
                         }
-                        Console.WriteLine($"FsMosquito SimConnect Shim Exited {exited.ExitCode}");
 
                         // Restart the shim if we didn't get a clean exit.
                         if (exited.ExitCode != 0)
                         {
-                            Task.Run(() => StartShim());
+                            Task.Run(() => StartSimConnectShim());
+                        }
+                        break;
+                    default:
+                        if (_logger != null)
+                        {
+                            _logger.LogWarning($"FsMosquito SimConnect Shim Unknown or unsupported CommandEvent: {cmdEvent}");
                         }
                         break;
                 }

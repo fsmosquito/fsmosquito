@@ -4,6 +4,10 @@
 
     public static class TaskExtensions
     {
+        /// <summary>
+        /// Allows for forgetting the invocation of a task.
+        /// </summary>
+        /// <param name="task"></param>
         public static void Forget(this Task task)
         {
             // note: this code is inspired by a tweet from Ben Adams: https://twitter.com/ben_a_adams/status/1045060828700037125
