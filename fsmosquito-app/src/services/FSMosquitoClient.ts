@@ -2,8 +2,6 @@ import React from 'react';
 import mqtt, { IMqttClient } from 'async-mqtt';
 import FSMosquitoStore from '@stores/FSMosquitoStore';
 import AirTrafficControlStore from '@stores/AirTrafficControlStore';
-import { DefaultSimConnectTopics } from '@models/DefaultSimConnectTopics';
-
 export class FSMosquitoClient {
   private client: IMqttClient;
 
@@ -91,17 +89,7 @@ export class FSMosquitoClient {
     if (!this.client || !this.fsMosquitoStore.hostName) {
       return;
     }
-    this.client.publish(`fsm/c/${this.fsMosquitoStore.hostName}/atc/status/pulse`, null);
-  }
-
-  subscribe() {
-    if (!this.client || !this.fsMosquitoStore.hostName) {
-      return;
-    }
-    this.client.publish(
-      `fsm/c/${this.fsMosquitoStore.hostName}/atc/subscribe/0`,
-      JSON.stringify(DefaultSimConnectTopics),
-    );
+    this.client.publish(`fsm/atc/status/pulse`, null);
   }
 
   setSimVar(normalizedVarName: string, objectId: null | number, value: any) {

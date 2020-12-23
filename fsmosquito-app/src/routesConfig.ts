@@ -10,7 +10,6 @@ import {
   faStore,
   faHeadphonesAlt,
   faJoystick,
-  faSyncAlt,
   faWifi,
 } from '@fortawesome/pro-duotone-svg-icons';
 
@@ -29,11 +28,11 @@ export interface NavItemProps {
 const routesConfig: NavItemProps[] = [
   {
     id: 'automation_studio',
-    title: 'Automation Studio',
+    title: 'Moving Map',
     messageId: 'sidebar.automation_studio',
-    icon: faSyncAlt,
+    icon: faGlobeAmericas,
     color: 'blue',
-    url: '/automationstudio',
+    url: '/movingmap',
   },
   {
     id: 'app',

@@ -20,8 +20,8 @@ interface AppLayoutProps {
 
 const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <>
-      <Navbar bg="primary" expand="lg" variant="dark">
+    <div className="container-fluid vh-100 d-flex flex-column" style={{ padding: 0 }}>
+      <Navbar bg="primary" expand="lg" variant="dark" title="FSMosquito Dashboard">
         <Link href="/" passHref={true}>
           <Navbar.Brand>
             <>
@@ -73,10 +73,10 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Container as="main" className="justify-content-center" fluid>
+      <Container as="main" className="justify-content-center" fluid style={{ height: '100%', padding: 0 }}>
         {children}
       </Container>
-    </>
+    </div>
   );
 };
 

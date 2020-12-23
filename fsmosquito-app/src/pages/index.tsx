@@ -2,15 +2,12 @@ import React, { useContext, useEffect } from 'react';
 import AppLayout from '@layouts/AppLayout';
 
 import { observer } from 'mobx-react';
-import Link from 'next/link';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 import { AppStoreContext } from '@stores/AppStore';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { faLink } from '@fortawesome/pro-duotone-svg-icons';
 import { FSMosquitoClientContext } from '@services/FSMosquitoClient';
 
 const Home = () => {
@@ -18,8 +15,7 @@ const Home = () => {
   const fsMosquitoClient = useContext(FSMosquitoClientContext);
   useEffect(() => {
     fsMosquitoClient.pulse();
-    fsMosquitoClient.subscribe();
-  }, []);
+  }, [fsMosquitoClient]);
 
   return (
     <AppLayout>

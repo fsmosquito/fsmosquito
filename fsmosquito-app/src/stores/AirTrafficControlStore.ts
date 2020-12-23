@@ -30,7 +30,7 @@ class AirTrafficControlStore {
     merge(this.traffic[airplane.id], airplane);
   }
 
-  @computed get selfPosition(): [number, number] {
+  @computed get currentPosition(): [number, number] {
     const position: [number, number] = [0, 0];
     const plane_latitude = get(this.self, 'plane_latitude');
     const plane_logitude = get(this.self, 'plane_longitude');
@@ -38,21 +38,21 @@ class AirTrafficControlStore {
       return position;
     }
 
-    position[0] = (plane_latitude * 180) / Math.PI;
-    position[1] = (plane_logitude * 180) / Math.PI;
+    position[0] = (plane_latitude.value * 180) / Math.PI;
+    position[1] = (plane_logitude.value * 180) / Math.PI;
     return position;
   }
 
   @computed get heading() {
-    return (get(this.self, 'plane_heading_degrees_true.value') * 180) / Math.PI;
+    return (this.self.plane_heading_degrees_true?.value * 180) / Math.PI;
   }
 
   @computed get latitude() {
-    return (this.self.plane_latitude.value * 180) / Math.PI;
+    return (this.self.plane_latitude?.value * 180) / Math.PI;
   }
 
   @computed get longitude() {
-    return (this.self.plane_longitude.value * 180) / Math.PI;
+    return (this.self.plane_longitude?.value * 180) / Math.PI;
   }
 }
 

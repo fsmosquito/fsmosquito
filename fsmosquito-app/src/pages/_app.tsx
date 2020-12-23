@@ -19,10 +19,12 @@ import { FSMosquitoRestClient, FSMosquitoRestClientContext } from '@services/FSM
 import AppLocale from '../localization';
 
 // Styles
-import 'react-perfect-scrollbar/dist/css/styles.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'bootswatch/dist/darkly/bootstrap.min.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import 'leaflet/dist/leaflet.css';
-import '@styles/darkly.css';
 import '@styles/globals.css';
 
 fontAwesomeConfig.autoAddCss = false;
@@ -47,6 +49,8 @@ function FSMosquitoApp({ Component, pageProps }) {
     try {
       const electron = window.require('electron');
       if (typeof electron !== 'object') {
+        // Request the current hostname via MQTT rather than electron IPC
+        fsMosquitoClient.current.pulse();
         return;
       }
 

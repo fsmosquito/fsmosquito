@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/pro-duotone-svg-icons';
@@ -44,23 +47,22 @@ const WaitingForFSMosquito = () => {
   }, [fsMosquitoClient, fadeIn, messageIndex]);
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" css={{ height: '100%', width: '100%' }}>
-      <FontAwesomeIcon icon={faCircleNotch} size="4x" spin={true} />
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        css={{ paddingLeft: '10px' }}
-      >
-        <Typography variant="h1">Waiting for FSMosquito client data...</Typography>
-        <Fade in={fadeIn} timeout={2000} style={{ height: '1pt' }}>
-          <Typography variant="h6" color="textSecondary">
-            {messages[messageIndex]}
-          </Typography>
-        </Fade>
-      </Box>
-    </Box>
+    <Container className="d-flex align-items-center" style={{ height: '100%' }}>
+      <Col>
+        <Row className="justify-content-md-center align-middle">
+          <FontAwesomeIcon icon={faCircleNotch} size="3x" spin={true} />
+          &nbsp;
+          <Typography variant="h4">Waiting for FSMosquito client data...</Typography>
+        </Row>
+        <Row className="justify-content-md-center">
+          <Fade in={fadeIn} timeout={2000} style={{ height: '1pt' }}>
+            <Typography variant="h6" color="textSecondary">
+              {messages[messageIndex]}
+            </Typography>
+          </Fade>
+        </Row>
+      </Col>
+    </Container>
   );
 };
 
