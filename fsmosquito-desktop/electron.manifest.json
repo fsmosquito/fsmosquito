@@ -12,13 +12,17 @@
         "appId": "com.fsmosquito-desktop.app",
         "productName": "fsmosquito-desktop",
         "copyright": "Copyright © 2020",
-        "buildVersion": "1.0.0",
+        "buildVersion": "0.1.0",
         "compression": "maximum",
         "directories": {
             "output": "../../../bin/Desktop"
         },
         "win": {
-            "icon": "./bin/Assets/fsmosquito.png"
+            "icon": "./bin/Assets/fsmosquito.png",
+            "publish": {
+                "provider": "github",
+                "owner": "fsmosquito"
+            }
         },
         "nsis": {
             "oneClick": true

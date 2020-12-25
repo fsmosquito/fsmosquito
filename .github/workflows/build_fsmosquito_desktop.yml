@@ -7,11 +7,11 @@ on:
     paths-ignore:
       - docs/**
       - README.md
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-      - docs/**
-      - README.md
+  # pull_request:
+  #   branches: [ master ]
+  #   paths-ignore:
+  #     - docs/**
+  #     - README.md
 
 jobs:
 
@@ -21,8 +21,11 @@ jobs:
     
     env:
       WORKING_DIRECTORY: ./fsmosquito-desktop
+      FRONTEND_DIRECTORY: ./fsmosquito-app
       FONT_AWESOME_AUTH_TOKEN: ${{ secrets.FONT_AWESOME_AUTH_TOKEN }}
       GPR_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CACHE_KEY: fsmosquito-desktop
 
     defaults:
       run:
@@ -50,6 +53,33 @@ jobs:
     - name: Install Electronizer
       run: dotnet tool install ElectronNET.CLI -g
 
+    # Define cached artifacts used by the frontend
+    -
+      name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+    -
+      name: Define yarn caching settings
+      uses: actions/cache@v2
+      id: yarn-cache
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-${{ env.CACHE_KEY }}-yarn-${{ hashFiles('${{ env.FRONTEND_DIRECTORY }}/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.CACHE_KEY }}-yarn-
+    -
+      name: Define node_modules caching settings
+      uses: actions/cache@v2
+      with:
+        path: '${{ env.FRONTEND_DIRECTORY }}/node_modules' 
+        key: ${{ runner.os }}-${{ env.CACHE_KEY }}-node_modules-${{ hashFiles('${{ env.FRONTEND_DIRECTORY }}/yarn.lock') }}
+    -
+      name: Define NextJS caching settings
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.FRONTEND_DIRECTORY }}/.next/cache
+        key: ${{ runner.os }}-${{ env.CACHE_KEY }}-nextjs-${{ hashFiles('${{ env.FRONTEND_DIRECTORY }}/yarn.lock') }}
+    
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #  run: dotnet test
