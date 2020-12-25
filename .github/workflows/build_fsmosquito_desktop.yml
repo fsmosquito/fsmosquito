@@ -34,18 +34,19 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET workloads
+    # Install dotnet
     - name: Install .NET 5
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.101
-    # Needed for Electronizer
+    
+    # dotnet core 3.1 currently needed for Electronizer
     - name: Install .NET Core 3.1
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
 
-    # Install Electronizer
+    # Install the electron .net build/packaging tool.
     - name: Install Electronizer
       run: dotnet tool install ElectronNET.CLI -g
 
@@ -57,9 +58,13 @@ jobs:
     - name: Build the Electron .Net Application
       run: electronize build /target win
 
-    # Upload the FSMosquitoDesktop binaries.
+    # Upload the FSMosquito Desktop binaries.
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: FSMosquitoDesktop
-        path: ${{ github.workspace }}\fsmosquito-desktop\bin\desktop\*
+        path: |
+          ${{ github.workspace }}\fsmosquito-desktop\bin\desktop\fsmosquito-desktop*.exe
+          ${{ github.workspace }}\fsmosquito-desktop\bin\desktop\fsmosquito-desktop*.exe.blockmap
+          ${{ github.workspace }}\fsmosquito-desktop\bin\desktop\latest.yml
+
