@@ -85,4 +85,4 @@ As the usual use-case is to improve the frontend, the steps to do so are the fol
 
 ### Why is it called FsMosquito?
 
-Like a mosquito, it siphons data from Flight Simulator 2020 via SimConnect. Also, there's a famous MQTT broker called [Mosquitto](https://mosquitto.org/) and the origination of this project was to play around with MQTT a bit so it fits.
+Like a mosquito, it siphons data from Flight Simulator 2020 via SimConnect. Also, there's a famous MQTT broker called [Mosquitto](https://mosquitto.org/) and the origination of this project was to play around with publishing SimConnect datum via MQTT so it fits.
