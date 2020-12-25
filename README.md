@@ -35,14 +35,18 @@ Also included in this repository is a small MQTT app that transmits SimConnect d
 
 ## Getting started
 
-- Download a release
-- Install
-- launch FsMosquito Desktop (Best on a second monitor)
+- Download a release from the [releases page](https://github.com/fsmosquito/fsmosquito/releases)
+- Install using the installer
+- Launch FsMosquito Desktop (Best on a second monitor)
 - Start Flight Simulator
+
+Your coordinates will appear on the first screen (which will be the dashboard) click on the "Moving Map" in the title
 
 ## Accessing from Mobile/Other computers and devices
 
 The Web-based interface runs on localhost:5272 by default, thus, if you open this port in Windows Firewall, other devices on your network can connect to the name/ip of the machine and view the same interface surfaced in FsMosquito Desktop.
+
+TODO: Put the current computer name and port in the title bar for easy reference
 
 ### Development:
 
