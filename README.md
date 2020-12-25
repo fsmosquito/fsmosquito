@@ -2,7 +2,7 @@
 
 Desktop App that provides real-time interactivity to FS2020 to view live data from Flight Sim via the app on a second monitor, separate computer or mobile device.
 
-![FsMosquito Moving Map](docs/images/2020-12-25 13_31_40-FSMosquito.png?raw=true "FsMosquito Moving Map")
+[![FsMosquito Moving Map](https://raw.githubusercontent.com/fsmosquito/fsmosquito/master/docs/images/2020-12-25%2013_31_40-FSMosquito.png "FsMosquito Moving Map")]
 
 > FsMosquito is under development and currently is in alpha.
 
