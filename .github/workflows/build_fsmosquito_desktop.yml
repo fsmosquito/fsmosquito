@@ -20,12 +20,13 @@ jobs:
     runs-on: windows-latest
     
     env:
-      working_directory: ./fsmosquito-desktop
-      project_file: fsmosquito-desktop.csproj
+      WORKING_DIRECTORY: ./fsmosquito-desktop
+      FONT_AWESOME_AUTH_TOKEN: ${{ secrets.FONT_AWESOME_AUTH_TOKEN }}
+      GPR_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
-        working-directory: ${{ env.working_directory }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
       
     steps:
     - name: Checkout
@@ -53,7 +54,7 @@ jobs:
     #  run: dotnet test
 
     # Build FsMosquito Desktop
-    - name: Build the application
+    - name: Build the Electron .Net Application
       run: electronize build /target win
 
     # Upload the FSMosquitoDesktop binaries.

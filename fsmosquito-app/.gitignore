@@ -16,7 +16,6 @@
 /build
 
 # misc
-.npmrc
 .DS_Store
 *.pem
 

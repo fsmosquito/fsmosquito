@@ -10,6 +10,7 @@ Need to reimplement:
  - Provide a customizable dashboard
  - View and control lights and various components of the aircraft.
  - Save previous flights and view breadcrumb trail.
+ - Designate and forward messages to an upstream MQTT Server (bridge implementation)
  - other stuff...
 
 Roadmap:
