@@ -23,11 +23,10 @@ Roadmap:
  - Connect to a community server to allow for economy-based goals - leaderboards, competitions, virtual FBOs, etc... 
  - auto-updates
 
-Currently built as an [Electron .Net](https://github.com/ElectronNET/Electron.NET) based app backed by .Net 5.0.
+Currently built as an [Electron .Net](https://github.com/ElectronNET/Electron.NET) based app backed by .Net 5.0 built as a ready-to-run app and released through Github Actions.
 
 A [WebView2](https://docs.microsoft.com/en-us/microsoft-edge/webview2/) based app or conversion is planned. At least though about ;)
-An annoyance right now is that since WebView2 isn't distributed as part of a release and folks will have to download it anyway and have a separate installation step, so,
-other than .net jingoism, might as well stick with tried and true electron.
+An annoyance right now is that since WebView2 isn't distributed as part of a release and folks will have to download it anyway and have a separate installation step, so, other than .net jingoism, might as well stick with tried and true electron.
 
 ## Getting started
 
