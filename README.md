@@ -73,3 +73,8 @@ Most of the development work is in the front end - providing functionality on to
 The backend is build using .Net 5 based components. It self-hosts a MQTT Broker, using MQTTNet, an ASP.Net 5 API layer described by swashbuckle, LiteDB for data peristence and a custom-built wrapper around the Microsoft-provided SimConnect API that provides enhanced reliability and publishes information coming from FS2020, such as Lat/Long/Alt/Heading/Airspeed and so forth, to MQTT subscribers.
 
 What brings the Frontend and Backend together into the desktop app is Electron.Net. This wraps the Frontend code and hoists the backend code to provide the full experience. A Github Action builds the electron app and publishes it as a ready-to-run app.
+
+
+### Why is it called FsMosquito?
+
+Like a mosquito, it siphons data from Flight Simulator 2020 via SimConnect. Also, there's a famous MQTT broker called [Mosquitto](https://mosquitto.org/) and the origination of this project was to play around with MQTT a bit so it fits.
