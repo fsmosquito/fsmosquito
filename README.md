@@ -1,6 +1,6 @@
 # FSMosquito
 
-Desktop App that provides real-time monitoring and interactivity to FS2020 to allow status updates via a locally running desktop application. Best on a second monitor, separate computer, or mobile device.
+Provides real-time monitoring and interactivity to FS2020 via a locally running desktop application. Best on a second monitor, separate computer, or mobile device.
 
 ![FsMosquito Moving Map](https://raw.githubusercontent.com/fsmosquito/fsmosquito/master/docs/images/2020-12-25%2013_31_40-FSMosquito.png "FsMosquito Moving Map")
 
