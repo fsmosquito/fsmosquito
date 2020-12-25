@@ -1,0 +1,72 @@
+on:
+  push:
+    tags:
+    - 'v*' # Create events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create FSMosquitoClient release
+
+jobs:
+
+  build:
+
+    name: Upload Release Asset
+    runs-on: windows-latest
+    
+    env:
+      Project_Path: fsmosquito-simconnect-client/fsmosquito-simconnect-client.csproj
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.101
+
+      # Execute all unit tests in the solution
+      # - name: Execute unit tests
+      #  run: dotnet test
+
+      # Build FSMosquitoClient
+      - name: Build the application
+        run: dotnet publish $env:Project_Path --configuration Release --runtime win10-x64 /p:Platform=x64 /p:DeployOnBuild=true /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:DebugType=None /p:PublishProfile="Create FSMosquitoClient Release"
+
+      # Run WarpPacker on the built files
+      # This is commented right now as warp packer opens a console window prior to opening the application - unclear how to prevent this.
+      # - name: Download WarpPacker
+      #   run: curl -Uri https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile WarpPacker.exe
+      
+      # - name: Run WarpPacker
+      #   run: .\WarpPacker.exe --arch windows-x64 --input_dir "bin\x64\Release\netcoreapp3.1\win10-x64\publish\" --exec FSMosquitoClient.exe --output FSMosquitoClient.exe
+      
+      - name: Remove Unnecessary files
+        run: rm "bin\x64\Release\netcoreapp3.1\win10-x64\publish\appsettings.dev.json"
+      
+      # Zip up our build artifacts using powershell
+      - name: Zip build artifacts
+        run: Compress-Archive -Path "${{ github.workspace }}\bin\x64\Release\netcoreapp3.1\win10-x64\publish\*" FSMosquitoClient.zip
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./FSMosquitoClient.zip
+          asset_name: FSMosquitoClient.zip
+          asset_content_type: application/zip

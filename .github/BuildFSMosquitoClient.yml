@@ -1,0 +1,49 @@
+name: Build FSMosquito Client
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - docs/**
+      - README.md
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - docs/**
+      - README.md
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+    
+    env:
+      Project_Path: fsmosquito-simconnect-client/fsmosquito-simconnect-client.csproj
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.101
+
+    # Execute all unit tests in the solution
+    # - name: Execute unit tests
+    #  run: dotnet test
+
+    # Build FSMosquitoClient
+    - name: Build the application
+      run: dotnet publish $env:Project_Path --configuration Release --runtime win10-x64 /p:Platform=x64 /p:DeployOnBuild=true /p:PublishSingleFile=true /p:PublishProfile="Create FSMosquitoClient Release"
+
+    # Upload the FSMosquitoClient binaries.
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: FSMosquitoClient
+        path: ${{ github.workspace }}\bin\x64\Release\netcoreapp3.1\win10-x64\publish\**\*
