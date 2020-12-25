@@ -54,7 +54,12 @@ TODO: Put the current computer name and port in the title bar for easy reference
 
 There are two general areas of development on FsMosquito:
 
- - The back end - which includes the SimConnect interface, backing data persistence APIs, the MQTT Implementation and so forth.
+ - The back end - MQTT service, data persistence, gathering data from FS2020, so forth.
  - The front end - user interface, maps, gadgets, so forth.
 
-Most of the development work is in the front end - providing functionality on top of data coming across the MQTT service bus and making it pretty and functional.
+Most of the development work is in the front end - providing functionality on top of data coming across the MQTT service bus and making it pretty and functional. The frontend is built using NextJS.
+
+
+The backend is build using .Net 5 based components. It self-hosts a MQTT Broker, using MQTTNet, an ASP.Net 5 API layer described by swashbuckle, LiteDB for data peristence and a custom-built wrapper around the Microsoft-provided SimConnect API that provides enhanced reliability and publishes information coming from FS2020, such as Lat/Long/Alt/Heading/Airspeed and so forth, to MQTT subscribers.
+
+What brings the Frontend and Backend together into the desktop app is Electron.Net. This wraps the Frontend code and hoists the backend code to provide the full experience.
