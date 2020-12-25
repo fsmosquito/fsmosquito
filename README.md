@@ -35,6 +35,8 @@ Also included in this repository is a small MQTT app that transmits SimConnect d
 
 ## Getting started
 
+This is for Flight Simulator 2020 users, so you'll need to have FS2020 already. This desktop app will need to run on the same Win64-based machine that FS is running on.
+
 - Download a release from the [releases page](https://github.com/fsmosquito/fsmosquito/releases)
 - Install using the installer
 - Launch FsMosquito Desktop (Best on a second monitor)
