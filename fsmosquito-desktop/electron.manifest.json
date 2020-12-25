@@ -21,7 +21,8 @@
             "icon": "./bin/Assets/fsmosquito.png",
             "publish": {
                 "provider": "github",
-                "owner": "fsmosquito"
+                "owner": "fsmosquito",
+                "repo": "fsmosquito"
             }
         },
         "nsis": {
