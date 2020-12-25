@@ -1,4 +1,4 @@
-name: Build FsMosquito Client
+name: Build FsMosquito Desktop
 
 on:
   push:
@@ -19,7 +19,12 @@ jobs:
     runs-on: windows-latest
     
     env:
-      Project_Path: fsmosquito-simconnect-client/fsmosquito-simconnect-client.csproj
+      working_directory: ./fsmosquito-desktop
+      project_file: fsmosquito-desktop.csproj
+
+    defaults:
+      run:
+        working-directory: ${{ env.working_directory }}
       
     steps:
     - name: Checkout
@@ -33,17 +38,21 @@ jobs:
       with:
         dotnet-version: 5.0.101
 
+    # Install Electronizer
+    - name: Install Electronizer
+      run: dotnet tool install ElectronNET.CLI -g
+
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #  run: dotnet test
 
-    # Build FSMosquitoClient
+    # Build FsMosquito Desktop
     - name: Build the application
-      run: dotnet publish $env:Project_Path --configuration Release --runtime win10-x64 /p:Platform=x64 /p:DeployOnBuild=true /p:PublishSingleFile=true /p:PublishProfile="Create FSMosquitoClient Release"
+      run: electronize build /target win
 
-    # Upload the FSMosquitoClient binaries.
+    # Upload the FSMosquitoDesktop binaries.
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: FSMosquitoClient
-        path: ${{ github.workspace }}\bin\x64\Release\netcoreapp3.1\win10-x64\publish\**\*
+        name: FSMosquitoDesktop
+        path: ${{ github.workspace }}\fsmosquito-desktop\bin\desktop\*

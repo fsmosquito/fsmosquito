@@ -3,7 +3,7 @@ on:
     tags:
     - 'v*' # Create events to matching v*, i.e. v1.0, v20.15.10
 
-name: Create FSMosquitoClient release
+name: Create FsMosquitoClient release
 
 jobs:
 
