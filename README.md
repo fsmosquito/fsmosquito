@@ -74,6 +74,14 @@ The backend is build using .Net 5 based components. It self-hosts a MQTT Broker,
 
 What brings the Frontend and Backend together into the desktop app is Electron.Net. This wraps the Frontend code and hoists the backend code to provide the full experience. A Github Action builds the electron app and publishes it as a ready-to-run app.
 
+### Getting Started
+
+As the usual use-case is to improve the frontend, the steps to do so are the following:
+
+1. Clone the repository.
+2. Start the FsMosquito Desktop using an existing release, or build it using the steps in ./fsmosquito-desktop/README.md. The backend can be run directly through visual studio by opening the solution and starting the FsMosquito desktop app - this will only launch the ASP.Net backend.
+3. Start the front end through ./fsmosquito-app, running yarn and yarn dev in that folder. It will connect to the running backend.
+4. Make changes and commit.
 
 ### Why is it called FsMosquito?
 
