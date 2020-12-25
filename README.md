@@ -29,10 +29,6 @@ A [WebView2](https://docs.microsoft.com/en-us/microsoft-edge/webview2/) based ap
 An annoyance right now is that since WebView2 isn't distributed as part of a release and folks will have to download it anyway and have a separate installation step, so,
 other than .net jingoism, might as well stick with tried and true electron.
 
-## FSMosquito MQTT Client
-
-Also included in this repository is a small MQTT app that transmits SimConnect datum to any MQTT server. see /fsmosquito-client.
-
 ## Getting started
 
 This is for Flight Simulator 2020 users, so you'll need to have FS2020 already. This desktop app will need to run on the same Win64-based machine that FS is running on.
@@ -49,6 +45,19 @@ Your coordinates will appear on the first screen (which will be the dashboard) c
 The Web-based interface runs on localhost:5272 by default, thus, if you open this port in Windows Firewall, other devices on your network can connect to the name/ip of the machine and view the same interface surfaced in FsMosquito Desktop.
 
 TODO: Put the current computer name and port in the title bar for easy reference
+
+
+## FSMosquito MQTT Client
+
+Also included in this repository is a small application that transmits SimConnect datum to any MQTT Broker and is the evolution of the FsMosquitoClient repository located [here](https://github.com/fsmosquito/fsmosquitoclient)
+
+This client is also built and installed and used along with the FsMosquito Desktop App. It's located within ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin```
+
+If you wish to just transmit SimConnect variables to any MQTT broker, you can run this app independently of FsMosquito Desktop.
+
+Configuration:
+
+edit ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin\appsettings.json``` in a text editor and add any additional SimConnect variables to subscribe to and transmit. A full listing of the available variables is installed as a [help file](file:///C:/MSFS%20SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html) along with the MS2020 SDK 
 
 ### Development:
 
