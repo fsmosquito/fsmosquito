@@ -48,7 +48,7 @@ TODO: Put the current computer name and port in the title bar for easy reference
 
 ## FSMosquito MQTT Client
 
-Also included in this repository is a small application that transmits SimConnect datum to [any MQTT Broker](https://en.wikipedia.org/wiki/Comparison_of_MQTT_implementations) and is the evolution of the FsMosquitoClient repository located [here](https://github.com/fsmosquito/fsmosquitoclient)
+Also included in this repository is a small application that transmits SimConnect datum to [any MQTT Broker](https://en.wikipedia.org/wiki/Comparison_of_MQTT_implementations) including [Azure IoT Hub](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-mqtt-support) and is the evolution of the FsMosquitoClient repository located [here](https://github.com/fsmosquito/fsmosquitoclient)
 
 This client is also built and installed and used along with the FsMosquito Desktop App. It's located within ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin```
 
