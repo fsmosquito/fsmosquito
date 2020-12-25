@@ -57,7 +57,9 @@ If you wish to just transmit SimConnect variables to any MQTT broker, you can ru
 
 Configuration:
 
-edit ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin\appsettings.json``` in a text editor and add any additional SimConnect variables to subscribe to and transmit. A full listing of the available variables is installed as a [help file](file:///C:/MSFS%20SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html) along with the MS2020 SDK (```C:/MSFS SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html```)
+edit ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin\appsettings.json``` in a text editor and add any additional SimConnect variables to subscribe to and transmit. By default, only the variables used by the FsMosquito desktop app are included and may change over time.
+
+A full listing of the available variables is installed as a [help file](file:///C:/MSFS%20SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html) along with the MS2020 SDK (```C:/MSFS SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html```)
 
 ### Development:
 
@@ -71,4 +73,4 @@ Most of the development work is in the front end - providing functionality on to
 
 The backend is build using .Net 5 based components. It self-hosts a MQTT Broker, using MQTTNet, an ASP.Net 5 API layer described by swashbuckle, LiteDB for data peristence and a custom-built wrapper around the Microsoft-provided SimConnect API that provides enhanced reliability and publishes information coming from FS2020, such as Lat/Long/Alt/Heading/Airspeed and so forth, to MQTT subscribers.
 
-What brings the Frontend and Backend together into the desktop app is Electron.Net. This wraps the Frontend code and hoists the backend code to provide the full experience.
+What brings the Frontend and Backend together into the desktop app is Electron.Net. This wraps the Frontend code and hoists the backend code to provide the full experience. A Github Action builds the electron app and publishes it as a ready-to-run app.
