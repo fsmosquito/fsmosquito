@@ -57,7 +57,7 @@ If you wish to just transmit SimConnect variables to any MQTT broker, you can ru
 
 Configuration:
 
-edit ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin\appsettings.json``` in a text editor and add any additional SimConnect variables to subscribe to and transmit. A full listing of the available variables is installed as a [help file](file:///C:/MSFS%20SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html) along with the MS2020 SDK 
+edit ```C:\Users\<username>\AppData\Local\Programs\fsmosquito-desktop\resources\bin\appsettings.json``` in a text editor and add any additional SimConnect variables to subscribe to and transmit. A full listing of the available variables is installed as a [help file](file:///C:/MSFS%20SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html) along with the MS2020 SDK (```C:/MSFS SDK/Documentation/04-Developer_Tools/SimConnect/SimConnect_Status_of_Simulation_Variables.html```)
 
 ### Development:
 
