@@ -5,11 +5,11 @@
     using System.Windows.Forms;
 
     [DesignerCategory("")]
-    public sealed class FsMosquitoContext : ApplicationContext
+    public sealed class FsMosquitoShimContext : ApplicationContext
     {
         private readonly ISimConnectEventSource _eventSource;
 
-        public FsMosquitoContext(ISimConnectEventSource eventSource)
+        public FsMosquitoShimContext(ISimConnectEventSource eventSource)
         {
             _eventSource = eventSource ?? throw new ArgumentNullException(nameof(eventSource));
 

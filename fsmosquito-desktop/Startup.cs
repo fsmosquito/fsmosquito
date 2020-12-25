@@ -18,6 +18,7 @@ namespace FsMosquito
     using System.Reflection;
     using Serilog;
     using Microsoft.Extensions.Logging;
+    using FsMosquito.SimConnect;
 
     public class Startup
     {
@@ -94,6 +95,9 @@ namespace FsMosquito
                 .AddMqttConnectionHandler()
                 .AddMqttWebSocketServerAdapter()
                 .AddConnections();
+
+            services.AddSingleton<FsMosquitoDesktopSimConnectShim>();
+            services.AddSingleton<ProcessMonitor<FsMosquitoDesktopSimConnectShim>>();
 
             services.AddSingleton<IFsMosquitoApp, FsMosquitoApp>();
         }

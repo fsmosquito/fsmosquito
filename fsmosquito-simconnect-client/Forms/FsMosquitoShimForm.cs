@@ -12,14 +12,14 @@
     /// Provides an implementation of ISimConnectEventSource that signals the Adapter when WinProc is called with a message of our configured id.
     /// </summary>
     [DesignerCategory("")]
-    public sealed class FsMosquitoForm : Form, ISimConnectEventSource
+    public sealed class FsMosquitoShimForm : Form, ISimConnectEventSource
     {
         private readonly ISimConnect _simConnect;
         private readonly ConcurrentDictionary<IObserver<SimConnectWindowsMessageEvent>, Unsubscriber> _observers = new ConcurrentDictionary<IObserver<SimConnectWindowsMessageEvent>, Unsubscriber>();
 
         private IContainer components = null;
 
-        public FsMosquitoForm(ISimConnect simConnect)
+        public FsMosquitoShimForm(ISimConnect simConnect)
         {
             _simConnect = simConnect ?? throw new ArgumentNullException(nameof(simConnect));
 
@@ -92,10 +92,10 @@
 
         private sealed class Unsubscriber : IDisposable
         {
-            private readonly FsMosquitoForm _parent;
+            private readonly FsMosquitoShimForm _parent;
             private readonly IObserver<SimConnectWindowsMessageEvent> _observer;
 
-            public Unsubscriber(FsMosquitoForm parent, IObserver<SimConnectWindowsMessageEvent> observer)
+            public Unsubscriber(FsMosquitoShimForm parent, IObserver<SimConnectWindowsMessageEvent> observer)
             {
                 _parent = parent ?? throw new ArgumentNullException(nameof(parent));
                 _observer = observer ?? throw new ArgumentNullException(nameof(observer));

@@ -1,9 +1,10 @@
 ﻿namespace FsMosquito.SimConnect
 {
     using MQTTnet.Client;
+    using System;
     using System.Threading.Tasks;
 
-    public interface ISimConnectMqttClient
+    public interface ISimConnectMqttClient : IObservable<MqttClientEvent>
     {
         /// <summary>
         /// Gets a value that indicates if the current instance is connected to MQTT

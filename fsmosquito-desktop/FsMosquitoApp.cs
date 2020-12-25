@@ -132,7 +132,7 @@
             {
                 _mainWindow.Show();
             };
-            Electron.Tray.SetToolTip("FSMosquito");
+            Electron.Tray.SetToolTip("FSMosquito Desktop");
         }
     }
 }

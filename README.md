@@ -1,11 +1,13 @@
 # FSMosquito
 
-Desktop App that provides real-time interactivity to FS2020 including a moving map, gauges and more...
+Desktop App that provides real-time interactivity to FS2020 to view live data from Flight Sim via the app on a second monitor, separate computer or mobile device.
 
 Features:
- - Provides a customizable dashboard to view live data from Flight Sim on a second monitor (or mobile device)
  - Moving map.
+
+Need to reimplement:
  - Gauges.
+ - Provide a customizable dashboard
  - View and control lights and various components of the aircraft.
  - Save previous flights and view breadcrumb trail.
  - other stuff...
@@ -14,7 +16,7 @@ Roadmap:
  - Virtual Pilot
  - Missions/Career mode.
  - Connect to a community server to allow for economy-based goals - leaderboards, competitions, virtual FBOs, etc... 
- - other stuff...
+ - auto-updates
 
 Currently built as an [Electron .Net](https://github.com/ElectronNET/Electron.NET) based app backed by .Net 5.0.
 
@@ -22,16 +24,16 @@ A [WebView2](https://docs.microsoft.com/en-us/microsoft-edge/webview2/) based ap
 An annoyance right now is that since WebView2 isn't distributed as part of a release and folks will have to download it anyway and have a separate installation step, so,
 other than .net jingoism, might as well stick with tried and true electron.
 
+## FSMosquito MQTT Client
+
+Also included in this repository is a small MQTT app that transmits SimConnect datum to any MQTT server. see /fsmosquito-client.
+
 ## Getting started
 
 - Download a release
 - Install
 - launch FsMosquito Desktop (Best on a second monitor)
 - Start Flight Simulator
-
-## Updates
-
-- It should auto-update - at least that's what the electron installer tells me.
 
 ## Accessing from Mobile/Other computers and devices
 
@@ -45,12 +47,3 @@ There are two general areas of development on FsMosquito:
  - The front end - user interface, maps, gadgets, so forth.
 
 Most of the development work is in the front end - providing functionality on top of data coming across the MQTT service bus and making it pretty and functional.
-
-Required Software:
-
-NodeJS
-Yarn
-Electronize
-
-
-electronize build /target win

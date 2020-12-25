@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fsmosquito-common\fsmosquito-common.csproj" />
-    <ProjectReference Include="..\fsmosquito-simconnect-shim\fsmosquito-simconnect-shim.csproj" />
+    <ProjectReference Include="..\fsmosquito-simconnect-client\fsmosquito-simconnect-client.csproj" />
     <ProjectReference Include="..\fsmosquito-simconnect\fsmosquito-simconnect.csproj" />
   </ItemGroup>
   <ItemGroup>

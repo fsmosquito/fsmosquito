@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Represents Simconnect Errors.
+    /// </summary>
     public sealed class SimConnectException : Exception
     {
         public SimConnectException()

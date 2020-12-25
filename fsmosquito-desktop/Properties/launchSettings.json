@@ -17,7 +17,7 @@
         "FSMOSQUITO_ENVIRONMENT": "Development"
       }
     },
-    "fsmosquito_desktop": {
+    "FsMosquitoDesktop": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
