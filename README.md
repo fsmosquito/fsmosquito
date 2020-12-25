@@ -21,7 +21,7 @@ Roadmap:
  - Virtual Pilot
  - Missions/Career mode.
  - Connect to a community server to allow for economy-based goals - leaderboards, competitions, virtual FBOs, etc... 
- - auto-updates
+ - Publish as a windows store app/auto-updates
 
 Currently built as an [Electron .Net](https://github.com/ElectronNET/Electron.NET) based app backed by .Net 5.0 built as a ready-to-run app and released through Github Actions.
 
